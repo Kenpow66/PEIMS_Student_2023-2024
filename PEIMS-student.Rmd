@@ -114,6 +114,28 @@ colnames(Student_PEIMS_4)[which(names(Student_PEIMS_4) == "CAMP_ID")] <- "CAMP_I
   
   table(Student_PEIMS_4$AGG_ETHNICITY) #check AGG_Ethnicity values for errors ("None")
 
+
+# Create BIL_PGM_COMBO_CD
+  Student_PEIMS_4 <- Student_PEIMS_4 %>% 
+    mutate(BIL_PGM_COMB_CD = case_when(
+      BIL_PGM_TYPE_CD >= 1 | ALT_LANG_PGM_CD == 1 ~ "1",
+      BIL_PGM_TYPE_CD == 0 & ALT_LANG_PGM_CD !=1 ~ "0",
+      TRUE ~ "NONE")) # Look for any missed
+      
+
+table(Student_PEIMS_4$BIL_PGM_COMB_CD) #check BIL_PGM_COMBO_CD values for errors ("None")
+
+# Create BIL_PGM_COMBO_CD
+  Student_PEIMS_4 <- Student_PEIMS_4 %>% 
+    mutate(ESL_PGM_COMB_CD = case_when(
+      ESL_PGM_TYPE_CD >= 1 | ALT_LANG_PGM_CD == 2 ~ "1",
+      ESL_PGM_TYPE_CD == 0 & ALT_LANG_PGM_CD != 2 ~ "0",
+      TRUE ~ "NONE")) # Look for any missed
+      
+
+table(Student_PEIMS_4$ESL_PGM_COMB_CD) #check BIL_PGM_COMBO_CD values for errors ("None")
+
+
 ```
 
 
