@@ -1,0 +1,119 @@
+---
+title: "PEIMS-student"
+author: "Ken Powers"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r Student Basic Information}
+###Load student basic information file
+
+Student_Basic <- read.csv("R:/RA_Internal/Archives/Specialist Data/PEIMS/2022-2023/PEIMS Fall 2022-2023/Student Data/Fall PEIMS Resubmission Data Files from TSDS/Student-Student Basic Information.csv")
+
+
+### Remove values from as_of_status_cd
+  ### A
+  ### C
+  ### E
+  ### G
+
+### -------TWO WAYS TO REMOVE THE ROWS WHICH CONTAIN THE VALUES ABOVE-------
+
+  ### NUMBER ONE
+
+Student_Basic1 <- subset(Student_Basic, !(AS_OF_STATUS_CD %in% c("A","C","E","G")))
+
+  ### NUMBER TWO
+  
+### Student_Basic2 <- Student_Basic[!(Student_Basic$AS_OF_STATUS_CD %in% c("A","C","E","G")),] 
+
+```
+
+```{r Student Enroll (School Association)}
+
+Student_enrollment <- read.csv("R:/RA_Internal/Archives/Specialist Data/PEIMS/2022-2023/PEIMS Fall 2022-2023/Student Data/Fall PEIMS Resubmission Data Files from TSDS/Student-Enrollment (School Association).csv")
+
+### keep only those columns needed
+
+### selecting columns by index position
+###Student_enrollment <- Student_enrollment %>% select(5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+
+### selecting columns by column name
+Student_enrollment1 <- Student_enrollment %>% 
+  select("CAMP_ID","STU_UNQ_ID","CAMP_ID_ENROLL","CAMP_ID_RESID","CAMP_ID_ACCNT","GRD_LVL_CD",        
+        "LAST_ENROLL_DT","STU_ATTRB_CD","PK_PGM_TYPE_CD","PK_PRIM_FNDG_SRC_CD","PK_SEC_FNDG_SRC_CD" 
+)
+### Left-join 
+
+Student_PEIMS_1 <- left_join(Student_Basic1,Student_enrollment1, by = "STU_UNQ_ID")
+
+```
+
+```{r Student Enrollment (Programs)}
+Student_programs <- read.csv("R:/RA_Internal/Archives/Specialist Data/PEIMS/2022-2023/PEIMS Fall 2022-2023/Student Data/Fall PEIMS Resubmission Data Files from TSDS/Student-Enrollment (Programs).csv")
+
+Student_programs1 <- Student_programs %>%  
+  select("STU_UNQ_ID","BIL_PGM_TYPE_CD","BIL_ESL_SMR_SCHL_FLAG","CTE_CD","ESL_PGM_TYPE_CD",   "FLXATT_PGM_TYPE_CD","GFT_TLNT_FLAG","SPED_FLAG","PREG_RLTD_SVCS_FLAG","FHSP_INSTR_FLAG","INTERV_STRATEGY_FLAG", "SECT_504_FLAG","ALT_LANG_PGM_CD","ADDTL_DAYS_PGM_FLAG","PY_BIL_ESL_SS_FLAG","DYSLEXIA_SVC_CD"      
+)
+
+Student_PEIMS_2 <- left_join(Student_PEIMS_1,Student_programs1, by = "STU_UNQ_ID")
+```
+
+
+```{r Student Special Education Program}
+
+Student_SPED <- read.csv("R:/RA_Internal/Archives/Specialist Data/PEIMS/2022-2023/PEIMS Fall 2022-2023/Student Data/Fall PEIMS Resubmission Data Files from TSDS/Student-Special Education Program.csv")
+
+Student_SPED1 <- Student_SPED %>%  
+  select("STU_UNQ_ID" ,"SPED_EFFECTIVE_DT" , "DSBL_MULT_FLAG","MED_FRGL_FLAG" ,         
+ "INSTR_STNG_CD","CHLD_CNT_FNDG_TYPE_CD" ,"PPCD_SVC_LOCN_CD","RDSPD_SVC_LEA_ID",    
+"DSBL_PRIM_CD","DSBL_SEC_CD","DSBL_TERT_CD","ASSIST_TECH_SVCS_FLAG","AUDIOL_SVCS_FLAG","COUNSEL_SVCS_FLAG",      
+"EARLY_CHLDHD_INTVT_FLAG","INTRP_SVCS_TYPE_CD","MED_DIAG_SVCS_FLAG","OCCUP_THER_FLAG",         
+"ORIENT_MBL_TRNG_FLAG","PHYS_THER_FLAG","PSCHL_PGM_CHLD_DSBL_FLAG","PSYCHOL_SVCS_FLAG",     
+"RECREAT_SVCS_FLAG","SPEECH_THER_CD","TRANSP_SVCS_FLAG"  
+)
+
+Student_PEIMS_3 <- left_join(Student_PEIMS_2,Student_SPED1, by = "STU_UNQ_ID")
+```
+
+
+
+```{r Student Title I Part A}
+
+Student_Title_1 <- read.csv("R:/RA_Internal/Archives/Specialist Data/PEIMS/2022-2023/PEIMS Fall 2022-2023/Student Data/Fall PEIMS Resubmission Data Files from TSDS/Student-Title I Part A Program.csv")
+
+Student_Title_1A <- Student_Title_1 %>% 
+    select("STU_UNQ_ID","T1PA_RDNG_FLAG","T1PA_MATH_FLAG","T1PA_SCI_FLAG","T1PA_SSTD_FLAG","T1PA_SVCS_GDNC_CNSL_FLAG","T1PA_SVCS_SOC_WORK_FLAG",
+           "T1PA_SVCS_HLTH_FLAG","T1PA_CD"
+)
+
+Student_PEIMS_4 <- left_join(Student_PEIMS_3,Student_Title_1A, by = "STU_UNQ_ID")
+
+```
+
+
+```{r Create Four new columns for Student_PEIMS}
+
+### Rename column "CAMPU_ID" TO "CAMP_ID_LOCAL"
+
+colnames(Student_PEIMS_4)[which(names(Student_PEIMS_4) == "CAMP_ID")] <- "CAMP_ID_LOCAL"
+
+### Combine all race/ethnic columns into one column
+
+# Create AGG_ETHNICITY
+  Student_PEIMS_4 <- Student_PEIMS_4 %>% 
+    mutate(AGG_ETHNICITY = case_when(
+      STU_ETHNIC_FLAG == 1 ~ "H", # If this flag is one, automatically Hispanic regardless of multiple races
+      rowSums(select(., 20:24) == 1) >= 2 ~ "T", # Check if more than 1 race 
+      RACE_AMER_IND_ALASK_FLAG == 1 ~ "I",
+      RACE_ASIAN_FLAG == 1 ~ "A",
+      RACE_BLACK_AFR_AMER_FLAG == 1 ~ "B",
+      RACE_HAW_PAC_ISL_FLAG == 1 ~ "P",
+      RACE_WHITE_FLAG == 1 ~ "W",
+      TRUE ~ "NONE")) # Look for any missed
+  
+  view(Student_PEIMS_4$AGG_ETHNICITY)
+
+```
+
+
