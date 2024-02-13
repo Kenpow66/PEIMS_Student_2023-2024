@@ -8,7 +8,7 @@ output: html_document
 ```{r Student Basic Information}
 ###Load student basic information file
 
-Student_Basic <- read.csv("R:/RA_Internal/Archives/Specialist Data/PEIMS/2022-2023/PEIMS Fall 2022-2023/Student Data/Fall PEIMS Resubmission Data Files from TSDS/Student-Student Basic Information.csv")
+Student_Basic <- read.csv("O:/SHARED/PEIMS/TSDS PEIMS Fall 2023-24/Student-Student Basic Information.csv")
 
 
 ### Remove values from as_of_status_cd
@@ -31,7 +31,7 @@ Student_Basic1 <- subset(Student_Basic, !(AS_OF_STATUS_CD %in% c("A","C","E","G"
 
 ```{r Student Enroll (School Association)}
 
-Student_enrollment <- read.csv("R:/RA_Internal/Archives/Specialist Data/PEIMS/2022-2023/PEIMS Fall 2022-2023/Student Data/Fall PEIMS Resubmission Data Files from TSDS/Student-Enrollment (School Association).csv")
+Student_enrollment <- read.csv("O:/SHARED/PEIMS/TSDS PEIMS Fall 2023-24/Student-Enrollment (School Association).csv")
 
 ### keep only those columns needed
 
@@ -50,7 +50,7 @@ Student_PEIMS_1 <- left_join(Student_Basic1,Student_enrollment1, by = "STU_UNQ_I
 ```
 
 ```{r Student Enrollment (Programs)}
-Student_programs <- read.csv("R:/RA_Internal/Archives/Specialist Data/PEIMS/2022-2023/PEIMS Fall 2022-2023/Student Data/Fall PEIMS Resubmission Data Files from TSDS/Student-Enrollment (Programs).csv")
+Student_programs <- read.csv("O:/SHARED/PEIMS/TSDS PEIMS Fall 2023-24/Student-Enrollment (Programs).csv")
 
 Student_programs1 <- Student_programs %>%  
   select("STU_UNQ_ID","BIL_PGM_TYPE_CD","BIL_ESL_SMR_SCHL_FLAG","CTE_CD","ESL_PGM_TYPE_CD",   "FLXATT_PGM_TYPE_CD","GFT_TLNT_FLAG","SPED_FLAG","PREG_RLTD_SVCS_FLAG","FHSP_INSTR_FLAG","INTERV_STRATEGY_FLAG", "SECT_504_FLAG","ALT_LANG_PGM_CD","ADDTL_DAYS_PGM_FLAG","PY_BIL_ESL_SS_FLAG","DYSLEXIA_SVC_CD"      
@@ -62,7 +62,7 @@ Student_PEIMS_2 <- left_join(Student_PEIMS_1,Student_programs1, by = "STU_UNQ_ID
 
 ```{r Student Special Education Program}
 
-Student_SPED <- read.csv("R:/RA_Internal/Archives/Specialist Data/PEIMS/2022-2023/PEIMS Fall 2022-2023/Student Data/Fall PEIMS Resubmission Data Files from TSDS/Student-Special Education Program.csv")
+Student_SPED <- read.csv("O:/SHARED/PEIMS/TSDS PEIMS Fall 2023-24/Student-Special Education Program.csv")
 
 Student_SPED1 <- Student_SPED %>%  
   select("STU_UNQ_ID" ,"SPED_EFFECTIVE_DT" , "DSBL_MULT_FLAG","MED_FRGL_FLAG" ,         
@@ -80,7 +80,7 @@ Student_PEIMS_3 <- left_join(Student_PEIMS_2,Student_SPED1, by = "STU_UNQ_ID")
 
 ```{r Student Title I Part A}
 
-Student_Title_1 <- read.csv("R:/RA_Internal/Archives/Specialist Data/PEIMS/2022-2023/PEIMS Fall 2022-2023/Student Data/Fall PEIMS Resubmission Data Files from TSDS/Student-Title I Part A Program.csv")
+Student_Title_1 <- read.csv("O:/SHARED/PEIMS/TSDS PEIMS Fall 2023-24/Student-Title I Part A Program.csv")
 
 Student_Title_1A <- Student_Title_1 %>% 
     select("STU_UNQ_ID","T1PA_RDNG_FLAG","T1PA_MATH_FLAG","T1PA_SCI_FLAG","T1PA_SSTD_FLAG","T1PA_SVCS_GDNC_CNSL_FLAG","T1PA_SVCS_SOC_WORK_FLAG",
@@ -112,7 +112,7 @@ colnames(Student_PEIMS_4)[which(names(Student_PEIMS_4) == "CAMP_ID")] <- "CAMP_I
       RACE_WHITE_FLAG == 1 ~ "W",
       TRUE ~ "NONE")) # Look for any missed
   
-  view(Student_PEIMS_4$AGG_ETHNICITY)
+  table(Student_PEIMS_4$AGG_ETHNICITY) #check AGG_Ethnicity values for errors ("None")
 
 ```
 
