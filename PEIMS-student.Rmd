@@ -160,3 +160,15 @@ Student_PEIMS_5 <- left_join(Student_PEIMS_4,Zoned_Schools, by = "LCL_STU_ID")
 
 
 ```
+
+```{r}
+
+# Create ESL_PGM_COMB_CD
+  Student_PEIMS_5 <- Student_PEIMS_5 %>% 
+    mutate(EVER_EL = case_when(
+      LEP_CD > 0 ~"1",
+      LEP_CD == 0 ~"0",
+      TRUE ~ "NONE")) # Look for any missed
+
+table(Student_PEIMS_5$EVER_EL) #check EVER_EL values for errors ("None")
+```
