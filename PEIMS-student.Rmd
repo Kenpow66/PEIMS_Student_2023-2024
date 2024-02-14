@@ -33,6 +33,8 @@ Student_Basic1 <- subset(Student_Basic, !(AS_OF_STATUS_CD %in% c("A","C","E","G"
 
 Student_enrollment <- read.csv("O:/SHARED/PEIMS/TSDS PEIMS Fall 2023-24/Student-Enrollment (School Association).csv")
 
+Student_enrollment$CAMP_ID <-as.character(Student_enrollment$CAMP_ID)
+
 ### keep only those columns needed
 
 ### selecting columns by index position
@@ -98,6 +100,11 @@ Student_PEIMS_4 <- left_join(Student_PEIMS_3,Student_Title_1A, by = "STU_UNQ_ID"
 
 colnames(Student_PEIMS_4)[which(names(Student_PEIMS_4) == "CAMP_ID")] <- "CAMP_ID_LOCAL"
 
+
+Student_PEIMS_4 <- Student_PEIMS_4 %>% 
+  mutate(CAMP_ID_LOCAL=substr(CAMP_ID_LOCAL, 7,9))
+
+
 ### Combine all race/ethnic columns into one column
 
 # Create AGG_ETHNICITY
@@ -140,8 +147,8 @@ table(Student_PEIMS_4$ESL_PGM_COMB_CD) #check BIL_PGM_COMBO_CD values for errors
 
 ```{r Zoned School Information}
 
-#library(readxl)
-#Zoned_Schools <- read_excel("C:/Users/P00118320/OneDrive - Houston Independent School District/CDR 2023-2024/1 Source Data/PEIMS 2023-2024 Assigned Zoned Schools.xlsx")
+library(readxl)
+Zoned_Schools <- read_excel(" ")
 
    
 PEIMS_2023_2024_Assigned_Zoned_Schools <- PEIMS_2023_2024_Assigned_Zoned_Schools %>% 
