@@ -138,4 +138,17 @@ table(Student_PEIMS_4$ESL_PGM_COMB_CD) #check BIL_PGM_COMBO_CD values for errors
 
 ```
 
+```{r Zoned School Information}
 
+#library(readxl)
+#Zoned_Schools <- read_excel("C:/Users/P00118320/OneDrive - Houston Independent School District/CDR 2023-2024/1 Source Data/PEIMS 2023-2024 Assigned Zoned Schools.xlsx")
+
+   
+PEIMS_2023_2024_Assigned_Zoned_Schools <- PEIMS_2023_2024_Assigned_Zoned_Schools %>% 
+    select(c(1,74:79))
+
+
+Student_PEIMS_5 <- left_join(Student_PEIMS_4,PEIMS_2023_2024_Assigned_Zoned_Schools, by = "LCL_STU_ID")
+
+
+```
