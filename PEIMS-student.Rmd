@@ -4,6 +4,9 @@ author: "Ken Powers"
 date: "`r Sys.Date()`"
 output: html_document
 ---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE)
+```
 
 ```{r Student Basic Information}
 ###Load student basic information file
@@ -146,16 +149,14 @@ table(Student_PEIMS_4$ESL_PGM_COMB_CD) #check BIL_PGM_COMBO_CD values for errors
 ```
 
 ```{r Zoned School Information}
-
 library(readxl)
-Zoned_Schools <- read_excel(" ")
+Zoned_Schools<- read_excel("PEIMS 2023-2024 Assigned Zoned Schools.xlsx")
+View(PEIMS_2023_2024_Assigned_Zoned_Schools)
 
-   
-PEIMS_2023_2024_Assigned_Zoned_Schools <- PEIMS_2023_2024_Assigned_Zoned_Schools %>% 
-    select(c(1,74:79))
+Zoned_Schools <- Zoned_Schools %>% 
+  select(c(1, 74:79))
 
-
-Student_PEIMS_5 <- left_join(Student_PEIMS_4,PEIMS_2023_2024_Assigned_Zoned_Schools, by = "LCL_STU_ID")
+Student_PEIMS_5 <- left_join(Student_PEIMS_4,Zoned_Schools, by = "LCL_STU_ID")
 
 
 ```
