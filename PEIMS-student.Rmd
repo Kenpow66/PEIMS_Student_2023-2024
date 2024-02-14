@@ -125,7 +125,7 @@ colnames(Student_PEIMS_4)[which(names(Student_PEIMS_4) == "CAMP_ID")] <- "CAMP_I
 
 table(Student_PEIMS_4$BIL_PGM_COMB_CD) #check BIL_PGM_COMBO_CD values for errors ("None")
 
-# Create BIL_PGM_COMBO_CD
+# Create ESL_PGM_COMB_CD
   Student_PEIMS_4 <- Student_PEIMS_4 %>% 
     mutate(ESL_PGM_COMB_CD = case_when(
       ESL_PGM_TYPE_CD >= 1 | ALT_LANG_PGM_CD == 2 ~ "1",
