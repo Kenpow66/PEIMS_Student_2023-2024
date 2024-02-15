@@ -13,6 +13,14 @@ knitr::opts_chunk$set(echo = TRUE,warning = FALSE)
 
 Student_Basic <- read.csv("O:/SHARED/PEIMS/TSDS PEIMS Fall 2023-24/Student-Student Basic Information.csv")
 
+library(lubridate)
+Student_Basic$STU_DOB <- mdy_hms(Student_Basic$STU_DOB)
+  
+
+head(Student_Basic$STU_DOB)
+
+#Student_Basic$STU_DOB <- Student_Basic$STU_DOB %>% 
+ #strptime("00-00-0000 00:00:00", format = "%m-%d-%Y H:M:S")
 
 ### Remove values from as_of_status_cd
   ### A
@@ -175,6 +183,8 @@ table(Student_PEIMS_5$EVER_EL) #check EVER_EL values for errors ("None")
 
 ```{R PK3 and PK4}
 
-Student_PEIMS_5 <-Student_PEIMS_5 %>% 
+
+
+
 
 ```
