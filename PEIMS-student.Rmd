@@ -83,7 +83,7 @@ Student_SPED1 <- Student_SPED %>%
 "DSBL_PRIM_CD","DSBL_SEC_CD","DSBL_TERT_CD","ASSIST_TECH_SVCS_FLAG","AUDIOL_SVCS_FLAG","COUNSEL_SVCS_FLAG",      
 "EARLY_CHLDHD_INTVT_FLAG","INTRP_SVCS_TYPE_CD","MED_DIAG_SVCS_FLAG","OCCUP_THER_FLAG",         
 "ORIENT_MBL_TRNG_FLAG","PHYS_THER_FLAG","PSCHL_PGM_CHLD_DSBL_FLAG","PSYCHOL_SVCS_FLAG",     
-"RECREAT_SVCS_FLAG","SPEECH_THER_CD","TRANSP_SVCS_FLAG"  
+"RECREAT_SVCS_FLAG","SPEECH_THER_CD","TRANSP_SVCS_FLAG","RDSPD_CD"  
 )
 
 Student_PEIMS_3 <- left_join(Student_PEIMS_2,Student_SPED1, by = "STU_UNQ_ID")
@@ -107,13 +107,11 @@ Student_PEIMS_4 <- left_join(Student_PEIMS_3,Student_Title_1A, by = "STU_UNQ_ID"
 
 ```{r Create Four new columns for Student_PEIMS}
 
-### Rename column "CAMPU_ID" TO "CAMP_ID_LOCAL"
-
-colnames(Student_PEIMS_4)[which(names(Student_PEIMS_4) == "CAMP_ID")] <- "CAMP_ID_LOCAL"
-
+### Create new  column "CAMPU_ID" from "CAMP_ID_LOCAL"
+Student_PEIMS_4$CAMPUS_ID_LOCAL <- Student_PEIMS_4$CAMP_ID
 
 Student_PEIMS_4 <- Student_PEIMS_4 %>% 
-  mutate(CAMP_ID_LOCAL=substr(CAMP_ID_LOCAL, 7,9))
+  mutate(CAMPUS_ID_LOCAL=substr(CAMP_ID, 7,9))
 
 
 ### Combine all race/ethnic columns into one column
@@ -188,5 +186,21 @@ Student_PEIMS_FINAL <- Student_PEIMS_5 %>%
    
          
 table(Student_PEIMS_FINAL$GRD_LVL_CD) #check values for errors ("None")
+
+```
+
+```{r}
+
+# Code to check for a clean file (all columns match prior years output)
+PEIMS.Fall_2022.23 <- read.csv("R:/RA_Internal/Profiles/Profiles 22-23/Student Profiles/Student Table for Profiles/PEIMS Fall_2022-23.csv")
+
+View(PEIMS.Fall_2022.23)
+
+common_columns <- intersect(names(Student_PEIMS_FINAL), names(PEIMS.Fall_2022.23))
+
+view(common_columns)
+
+all_columns <- names(PEIMS.Fall_2022.23)
+missing_columns <- setdiff(all_columns, common_columns)
 
 ```
