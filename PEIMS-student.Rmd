@@ -183,8 +183,10 @@ table(Student_PEIMS_5$EVER_EL) #check EVER_EL values for errors ("None")
 
 ```{R PK3 and PK4}
 
-
-
-
+Student_PEIMS_FINAL <- Student_PEIMS_5 %>% 
+  mutate(GRD_LVL_CD = ifelse(GRD_LVL_CD == "PK", ifelse(STU_DOB <= "2019-09-01","PK4","PK3"), GRD_LVL_CD))
+   
+         
+table(Student_PEIMS_FINAL$GRD_LVL_CD) #check values for errors ("None")
 
 ```
