@@ -172,3 +172,9 @@ Student_PEIMS_5 <- left_join(Student_PEIMS_4,Zoned_Schools, by = "LCL_STU_ID")
 
 table(Student_PEIMS_5$EVER_EL) #check EVER_EL values for errors ("None")
 ```
+
+```{R PK3 and PK4}
+
+Student_PEIMS_5 <-Student_PEIMS_5 %>% 
+
+```
