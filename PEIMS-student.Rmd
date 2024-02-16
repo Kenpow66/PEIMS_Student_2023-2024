@@ -155,12 +155,12 @@ table(Student_PEIMS_4$ESL_PGM_COMB_CD) #check BIL_PGM_COMBO_CD values for errors
 ```
 
 ```{r Zoned School Information}
-library(readxl)
-Zoned_Schools<- read_excel("PEIMS 2023-2024 Assigned Zoned Schools.xlsx")
+
+Zoned_Schools<- read.csv("R:/RA_Internal/Profiles/Profiles 23-24/Zoned Campus/Updated Zoned Students File_2_16_2024/PEIMS 2023-2024 Assigned Zoned Schools.csv")
 View(PEIMS_2023_2024_Assigned_Zoned_Schools)
 
 Zoned_Schools <- Zoned_Schools %>% 
-  select(c(1, 74:79))
+  select(c(1,52,53,73,75,77,79))
 
 Student_PEIMS_5 <- left_join(Student_PEIMS_4,Zoned_Schools, by = "LCL_STU_ID")
 
